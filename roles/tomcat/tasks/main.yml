@@ -11,33 +11,8 @@
   - name: Start tomcat service on hosts server
     service: name=tomcat9 state=started
 
-
-- name: Download Tomcat
-  get_url: url=http://archive.apache.org/dist/tomcat/tomcat-7/v7.0.61/bin/apache-tomcat-7.0.61.tar.gz dest=/opt/apache-tomcat-7.0.61.tar.gz
-
-- name: Extract archive
-  command: chdir=/usr/share /bin/tar xvf /opt/apache-tomcat-7.0.61.tar.gz -C /opt/ creates=/opt/apache-tomcat-7.0.61
-
-- name: Symlink install directory
-  file: src=/opt/apache-tomcat-7.0.61 path=/usr/share/tomcat state=link
-
-- name: Change ownership of Tomcat installation
-  file: path=/usr/share/tomcat/ owner=tomcat group=tomcat state=directory recurse=yes
-
-- name: Configure Tomcat server
-  template: src=server.xml dest=/usr/share/tomcat/conf/
-
-  
-- name: Create  sample directory
-  file: 
-    path: "/opt/apache-tomcat-7.0.61/webapps/samples"
-    state: directory
-    mode: 0777
-  become: true
-  
-
 - name: copy war file
-  copy: src=/var/lib/jenkins/wor
+  copy: src=/var/lib/jenkins/workspace
   notify: restart tomcat
 
 - name: Install Tomcat init script
@@ -46,5 +21,5 @@
 - name: Start Tomcat
   shell: nohup /usr/share/tomcat/bin/startup.sh
 
-- name: wait for tomcat to start
-  wait_for: port={{http_port}}
+#- name: wait for tomcat to start
+ # wait_for: port={{http_port}}
