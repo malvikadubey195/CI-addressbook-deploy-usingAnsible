@@ -1,23 +1,45 @@
 ---
-- name: Install Java 1.8
-  apt: update_cache=true name=openjdk-8-jdk state=present
+- name: Install and configure Tomcat
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install Java 1.8
+      apt:
+        update_cache: true
+        name: openjdk-8-jdk
+        state: present
 
-- name: Create a Tomcat User
-    user: name=tomcat
-  - name: Create a Tomcat Group
-    group: name=tomcat
-  - name: Install tomcat on hosts server
-    apt: name=tomcat9 state=present
-  - name: Start tomcat service on hosts server
-    service: name=tomcat9 state=started
+    - name: Create a Tomcat Group
+      group:
+        name: tomcat
 
-- name: copy war file
-  copy: src=./addressbook_main/target/addressbook.war dest=/usr/share/tomcat9/webapps
-  notify: restart tomcat
+    - name: Create a Tomcat User
+      user:
+        name: tomcat
+        group: tomcat
+        home: /usr/share/tomcat
+        createhome: no
 
-- name: Install Tomcat init script
-  copy: src=tomcat-initscript.sh dest=/etc/init.d/tomcat mode=0755
+    - name: Install tomcat on host servers
+      apt:
+        name: tomcat9
+        state: present
 
+    - name: Start tomcat service on host servers
+      service:
+        name: tomcat9
+        state: started
 
-#- name: wait for tomcat to start
- # wait_for: port={{http_port}}
+    - name: Copy WAR file
+      copy:
+        src: ./addressbook_main/target/addressbook.war
+        dest: /usr/share/tomcat9/webapps/
+      notify: restart tomcat
+
+    - name: Install Tomcat init script
+      copy:
+        src: tomcat-initscript.sh
+        dest: /etc/init.d/tomcat
+        mode: '0755'
+
+ 
