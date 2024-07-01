@@ -12,14 +12,12 @@
     service: name=tomcat9 state=started
 
 - name: copy war file
-  copy: src=/var/lib/jenkins/workspace
+  copy: src=./addressbook_main/target/addressbook.war dest=/usr/share/tomcat9/webapps
   notify: restart tomcat
 
 - name: Install Tomcat init script
   copy: src=tomcat-initscript.sh dest=/etc/init.d/tomcat mode=0755
 
-- name: Start Tomcat
-  shell: nohup /usr/share/tomcat/bin/startup.sh
 
 #- name: wait for tomcat to start
  # wait_for: port={{http_port}}
