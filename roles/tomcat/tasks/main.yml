@@ -31,11 +31,9 @@
     src: ./addressbook_main/target/addressbook.war
     dest: /usr/share/tomcat9/webapps/
 
- - name: Install Tomcat init script
+- name: Install Tomcat init script
   copy:
     src: tomcat-initscript.sh
     dest: /etc/init.d/tomcat9
-    mode: '0755'   
+    mode: '0755'
   notify: restart tomcat
-
-
