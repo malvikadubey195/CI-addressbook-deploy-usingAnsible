@@ -1,2 +1,7 @@
-[all]
-192.168.56.102
+[webserver]
+
+4.213.169.82  ansible_ssh_user=ANSIBLENODE2
+
+
+[appserver]
+52.172.173.173   ansible_ssh_user=ANSIBLENODE3
